@@ -1,3 +1,12 @@
 {
-  "modules": []
+  "modules": [
+    {
+      "id": 1769942606405,
+      "name": "LSPosed JingMatrix",
+      "version": "1.11.0",
+      "link": "https://github.com/JingMatrix/LSPosed/releases",
+      "description": "A Zygisk module trying to provide an ART hooking framework which delivers consistent APIs with the OG Xposed, leveraging LSPlant hooking framework.",
+      "date": "1/2/2026"
+    }
+  ]
 }
