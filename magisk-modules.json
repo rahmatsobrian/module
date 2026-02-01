@@ -1,12 +1,3 @@
 {
-  "modules": [
-    {
-      "id": 1769941783470,
-      "name": "LSPosed",
-      "version": "1.11.0",
-      "link": "https://github.com/JingMatrix/LSPosed/releases",
-      "description": "Tidak ada deskripsi",
-      "date": "1/2/2026"
-    }
-  ]
+  "modules": []
 }
