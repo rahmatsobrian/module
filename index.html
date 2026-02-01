@@ -6,6 +6,7 @@
 <title>Module Repository</title>
 
 <style>
+/* === UI ASLI (TIDAK DIUBAH) === */
 :root{
   --bg:#f2f2f7;
   --card:#ffffff;
@@ -26,35 +27,34 @@ header{
 }
 header h1{font-size:20px;margin:0}
 
-/* ADMIN BAR - DIPERBAIKI */
 .admin-bar{
   display:flex;
   gap:8px;
   align-items:center;
-  height:35px; /* Tinggi tetap */
+  height:35px;
 }
 .admin-bar input{
   flex:1;
-  min-width:130px; /* Penting untuk flex shrink */
-  max-width:180px; /* Batasi lebar input */
-  padding:8px 12px; /* Padding lebih konsisten */
-  height:100%; /* Isi tinggi container */
+  min-width:130px;
+  max-width:180px;
+  padding:8px 12px;
+  height:100%;
   border-radius:10px;
   border:1px solid #ddd;
   font-size:13px;
-  margin:0; /* Hilangkan margin default */
+  margin:0;
 }
 .admin-bar button{
-  flex-shrink:0; /* Tombol tidak mengecil */
-  padding:8px 16px; /* Padding lebih lebar */
-  height:100%; /* Isi tinggi container */
+  flex-shrink:0;
+  padding:8px 16px;
+  height:100%;
   border:none;
   border-radius:10px;
   background:var(--accent);
   color:#fff;
   font-size:13px;
   font-weight:600;
-  white-space:nowrap; /* Tekst tidak wrap */
+  white-space:nowrap;
   cursor:pointer;
 }
 
@@ -89,10 +89,8 @@ button{
 button.gray{background:#8e8e93}
 button.danger{background:var(--danger)}
 
-.flex{display:flex;gap:10px;flex-wrap:wrap}
 .hidden{display:none}
 
-/* MODULE */
 .module-title{font-size:17px;font-weight:600;margin-bottom:6px}
 .module-desc{font-size:14px;color:var(--sub);margin-bottom:10px}
 .module-meta{
@@ -112,12 +110,19 @@ button.danger{background:var(--danger)}
 .actions a{flex:1;text-decoration:none}
 .actions button{width:100%}
 
-/* STATS */
 .stats{
   display:flex;
   justify-content:space-between;
   align-items:center;
   font-size:14px;
+  color:var(--sub)
+}
+
+.api-limit{
+  margin-top:8px;
+  font-size:13px;
+  display:flex;
+  justify-content:space-between;
   color:var(--sub)
 }
 </style>
@@ -128,7 +133,6 @@ button.danger{background:var(--danger)}
 <header>
   <h1>📦 Module Repository</h1>
 
-  <!-- ADMIN LOGIN COMPACT -->
   <div id="loginBar" class="admin-bar">
     <input id="adminPass" type="password" placeholder="Admin password">
     <button onclick="login()">Login</button>
@@ -142,7 +146,6 @@ button.danger{background:var(--danger)}
 
 <div class="container">
 
-<!-- ADMIN PANEL -->
 <div id="adminPanel" class="card hidden">
   <h3>⚙️ Admin Panel</h3>
   <input id="ghToken" type="password" placeholder="GitHub Token (wajib)">
@@ -158,39 +161,52 @@ button.danger{background:var(--danger)}
   <button onclick="addModule()">➕ Tambah Module</button>
 </div>
 
-<!-- SEARCH + STATS -->
 <div class="card">
   <input id="search" placeholder="🔍 Cari module (nama / deskripsi)" oninput="render()">
+
   <div class="stats">
     <span>📦 Total Module:</span>
     <strong id="totalCount">0</strong>
   </div>
+
+  <div class="api-limit">
+    <span>🔗 GitHub API:</span>
+    <strong id="apiLimitText">Loading…</strong>
+  </div>
+
+  <!-- INFO MODE (TAMBAHAN, TANPA MERUSAK LAYOUT) -->
+  <div class="api-limit">
+    <span>⚙️ Mode:</span>
+    <strong id="modeText">API</strong>
+  </div>
 </div>
 
-<!-- LIST -->
 <div id="list"></div>
-
 </div>
 
 <script>
+/* ===== CONFIG ===== */
 const ADMIN_PASSWORD="adminsiroha";
 const OWNER="rahmatsobrian";
 const REPO="module";
 const BRANCH="main";
 const PATH="magisk-modules.json";
-const API="https://api.github.com";
+
+const API_URL=`https://api.github.com/repos/${OWNER}/${REPO}/contents/${PATH}?ref=${BRANCH}`;
+const RAW_URL=`https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${PATH}`;
 
 let modules=[], isAdmin=false, fileSha=null;
-
+let MODE="API"; // API | RAW
 const token=()=>sessionStorage.getItem("gh_token");
 
-/* AUTH */
+/* ===== AUTH ===== */
 function login(){
   if(adminPass.value===ADMIN_PASSWORD){
     isAdmin=true;
     loginBar.classList.add("hidden");
     adminInfo.classList.remove("hidden");
     adminPanel.classList.remove("hidden");
+    render();
   } else alert("Password salah");
 }
 function logout(){
@@ -199,44 +215,62 @@ function logout(){
   loginBar.classList.remove("hidden");
   adminInfo.classList.add("hidden");
   adminPanel.classList.add("hidden");
+  checkApiLimit();
+  render();
 }
 function saveToken(){
   if(!ghToken.value) return alert("Token kosong");
   sessionStorage.setItem("gh_token",ghToken.value);
-  alert("Token siap");
+  alert("Token berhasil tersimpan");
+  checkApiLimit();
 }
 
-/* GITHUB */
+/* ===== LOAD DATA (API → RAW FALLBACK) ===== */
 async function load(){
-  const r=await fetch(`${API}/repos/${OWNER}/${REPO}/contents/${PATH}?ref=${BRANCH}`);
-  const d=await r.json();
-  fileSha=d.sha;
-  modules=JSON.parse(atob(d.content.replace(/\n/g,""))).modules||[];
+  try{
+    const r=await fetch(API_URL);
+    if(!r.ok) throw "API_FAIL";
+    const d=await r.json();
+    fileSha=d.sha;
+    modules=JSON.parse(atob(d.content.replace(/\n/g,""))).modules||[];
+    MODE="API";
+    modeText.textContent="API";
+  }catch{
+    const r=await fetch(RAW_URL);
+    const d=await r.json();
+    modules=d.modules||[];
+    MODE="RAW";
+    modeText.textContent="RAW";
+  }
   render();
 }
+
+/* ===== SAVE ===== */
 async function save(){
-  if(!token()) throw "NO_TOKEN";
+  if(MODE!=="API") throw "READ_ONLY";
   const body={
     message:`Update modules ${new Date().toISOString()}`,
     content:btoa(unescape(encodeURIComponent(JSON.stringify({modules},null,2)))),
     sha:fileSha,
     branch:BRANCH
   };
-  const r=await fetch(`${API}/repos/${OWNER}/${REPO}/contents/${PATH}`,{
+  await fetch(API_URL,{
     method:"PUT",
-    headers:{Authorization:"token "+token(),"Content-Type":"application/json"},
+    headers:{
+      Authorization:"token "+token(),
+      "Content-Type":"application/json"
+    },
     body:JSON.stringify(body)
   });
-  if(!r.ok) throw "SAVE_FAIL";
 }
 
-/* MODULE */
+/* ===== ADD / DELETE ===== */
 async function addModule(){
   if(!isAdmin) return;
+  if(MODE!=="API") return alert("Cant add module, because RAW Mode");
   if(!token()) return alert("Isi token dulu");
   if(!mName.value||!mLink.value) return alert("Nama & link wajib");
 
-  const backup=[...modules];
   modules.unshift({
     id:Date.now(),
     name:mName.value,
@@ -246,50 +280,85 @@ async function addModule(){
     date:new Date().toLocaleDateString("id-ID")
   });
 
-  try{
-    await save(); await load();
-    mName.value=mVer.value=mLink.value=mDesc.value="";
-  }catch{
-    modules=backup;
-    alert("Gagal simpan");
-  }
-}
-async function del(id){
-  if(!isAdmin||!token()) return;
-  const backup=[...modules];
-  modules=modules.filter(m=>m.id!==id);
-  try{await save();await load();}
-  catch{modules=backup;}
+  await save();
+  await load();
+  mName.value=mVer.value=mLink.value=mDesc.value="";
 }
 
-/* UI */
+async function del(id){
+  if(!isAdmin || MODE!=="API") return;
+  if(!token()){
+    alert("Silakan masukkan dan simpan Token Github terlebih dahulu");
+    return;
+  }
+  if(!confirm("Yakin ingin menghapus module ini?")) return;
+  modules = modules.filter(m => m.id !== id);
+  await save();
+  await load();
+}
+
+/* ===== RENDER ===== */
 function render(){
   const q=search.value.toLowerCase();
   const filtered=modules.filter(m=>
     m.name.toLowerCase().includes(q) ||
     m.description.toLowerCase().includes(q)
   );
-
   totalCount.textContent=filtered.length;
   list.innerHTML="";
-
   filtered.forEach(m=>{
-    const c=document.createElement("div");
-    c.className="card";
-    c.innerHTML=`
-      <div class="module-title">${esc(m.name)}</div>
-      <div class="module-desc">${esc(m.description)}</div>
-      <div class="module-meta">
-        <span class="pill">v${esc(m.version)}</span>
-        <span class="date">${m.date}</span>
-      </div>
-      <div class="actions">
-        <a href="${esc(m.link)}" target="_blank"><button>Download</button></a>
-        ${isAdmin?`<button class="danger" onclick="del(${m.id})">Delete</button>`:""}
+    list.innerHTML+=`
+      <div class="card">
+        <div class="module-title">${esc(m.name)}</div>
+        <div class="module-desc">${esc(m.description)}</div>
+        <div class="module-meta">
+          <span class="pill">v${esc(m.version)}</span>
+          <span class="date">${m.date}</span>
+        </div>
+        <div class="actions">
+          <a href="${esc(m.link)}" target="_blank"><button>Download</button></a>
+          ${isAdmin && MODE==="API"
+            ? `<button class="danger" onclick="del(${m.id})">Delete</button>`
+            : ""}
+        </div>
       </div>`;
-    list.appendChild(c);
   });
 }
+
+/* ===== API LIMIT ===== */
+async function checkApiLimit(){
+  try{
+    const headers={};
+    if(isAdmin && token()) {
+  headers.Authorization = "token " + token();
+}
+    const r=await fetch("https://api.github.com/rate_limit",{headers});
+    const d=await r.json();
+    const {remaining,limit,reset}=d.rate;
+
+    const t=new Date((reset+7*3600)*1000);
+    const jam=String(t.getUTCHours()).padStart(2,"0");
+    const menit=String(t.getUTCMinutes()).padStart(2,"0");
+
+    if(remaining===0){
+      apiLimitText.innerHTML=`<span style="color:#FF1300;font-weight:600">Limit Reached</span> Reset ${jam}.${menit} WIB`;
+      MODE="RAW";
+      modeText.textContent="RAW";
+      return;
+    }
+
+    let color="#007AFF";
+    if(remaining<100) color="#007AFF";
+    if(remaining<60) color="#4CD964";
+    if(remaining<30) color="#FF9500";
+    if(remaining<10) color="#FF1300";
+
+    apiLimitText.innerHTML=`<span style="color:${color}">[${remaining}/${limit}]</span> Reset ${jam}.${menit} WIB`;
+  }catch{
+    apiLimitText.textContent=`<span style="color:#FF1300;font-weight:600">Unavailable</span>`;
+  }
+}
+
 function esc(t){
   return t.replace(/[&<>"']/g,m=>({
     "&":"&amp;","<":"&lt;",">":"&gt;",
@@ -298,8 +367,9 @@ function esc(t){
 }
 
 load();
+checkApiLimit();
+setInterval(checkApiLimit,60000);
 </script>
 
 </body>
 </html>
-
