@@ -1,14 +1,6 @@
 {
   "modules": [
     {
-      "id": 1769944956389,
-      "name": "Test",
-      "version": "Test",
-      "link": "Test",
-      "description": "Test",
-      "date": "1/2/2026"
-    },
-    {
       "id": 1769944938417,
       "name": "Test",
       "version": "Test",
