@@ -1,6 +1,14 @@
 {
   "modules": [
     {
+      "id": 1769945273207,
+      "name": "Test",
+      "version": "10101",
+      "link": "Hahah",
+      "description": "Hahaha",
+      "date": "1/2/2026"
+    },
+    {
       "id": 1769942606405,
       "name": "LSPosed JingMatrix",
       "version": "1.11.0",
