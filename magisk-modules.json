@@ -1,6 +1,14 @@
 {
   "modules": [
     {
+      "id": 1769945652120,
+      "name": "Zygisk ls",
+      "version": "1.0.2.3",
+      "link": "Hahah",
+      "description": "Zygisk",
+      "date": "1/2/2026"
+    },
+    {
       "id": 1769945273207,
       "name": "Test",
       "version": "10101",
