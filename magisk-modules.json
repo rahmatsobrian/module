@@ -1,6 +1,14 @@
 {
   "modules": [
     {
+      "id": 1770729807699,
+      "name": "Zygisk Assistant",
+      "version": "1.0",
+      "link": "https://raw.githubusercontent.com/rahmatsobrian/module/main/files/1770729778045_HR-Zygisk-Assistant-v2.1.4-1013f8a-release.zip",
+      "description": "Hide root",
+      "date": "10/2/2026"
+    },
+    {
       "id": 1770729522455,
       "name": "Cgc7g",
       "version": "000",
