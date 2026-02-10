@@ -1,0 +1,233 @@
+🔥 CARA HIDE ROOT/FIX FC DI MAGISK TANPA SHAMIKO 🔥
+
+⚠️ #BELUM TENTU WORK, TERGANTUNG ROM DLL ⚠️
+
+---
+
+📦 Bahan-bahan:
+
+- ✔️ Wajib Ada Gapps (Playstore, Layanan Google Play)
+- ✔️ Module magisk Zygisk next 1.3.1/1.3.2++
+- ✔️ Module magisk Tricky store terbaru
+- ✔️ Module magisk Tricky addon terbaru
+- ✔️ Module magsik LSPosed by jing matrix (developer terserah yg penting lsposed)
+- ✔️ Aplikasi HMA OSS Terbaru (Module LSPosed)
+- ✔️ Aplikasi KsuWebUi
+- ✔️ Aplikasi Key Attestation
+- ✔️ Aplikasi mbank yang mau di fix
+- ✔️ Config HMA OSS Siroha
+
+---
+
+📌 Syarat:
+
+- 📲 Mbank harus sudah terinstall terlebih dahulu
+- ⭐ Gunakan magisk alpha (rekomendasi)
+- ⭐ Gunakan versi magisk yang paling terbaru (28, 29, 30, sampai seterusnya)
+- ❌ Jangan aktifkan enforce denylist/paksa denylist
+- ❌ Jangan aktifkan zygisk bawaan magisk di pengaturan magisknya
+
+---
+
+⚙️ Langkah-langkah ⚙️
+
+---
+
+🧩 Install Aplikasi
+
+- Install aplikasi Key Attestation
+- Install aplikasi KsuWebUi
+- Install aplikasi Hide My Applist OSS (HMA OSS.apk)
+
+---
+
+🎭 Setup Magisk
+
+- Buka magisk
+- Buka pengaturan (ikon gerigi/roda gerigi)
+- Scroll kebawah cari sembunyikan magisk
+- Aktifkan dan rename atau kasih nama terserah
+- Kembali ke beranda magisk
+
+---
+
+📦 Install Module
+
+- Pindah ke tab/menu modul
+- Install module Zygisk next 1.3.1/1.3.2++
+- Kembali
+- Install module pif
+   - (Pif Fork Modded A10-A11,A12)
+   - (Pif Inject S Modded A13-A16)
+- Kembali
+- Install module Tricky store
+- Kembali
+- Install module Tricky addon
+- Kembali
+- Install module LSPosed by jingmatrix
+- 🌀 Reboot
+
+---
+
+🛩️ Setting Tricky Store (Keybox)
+
+- Buka aplikasi ksu webui
+- Izinkan akses rootnya
+- Klik tricky store
+- Lalu klik Menu garis/titik 3 pojok kanan atas (menu)
+- Klik pilih semua (icon kotak bergerigi?)
+- Klik simpan
+- Klik menu lagi
+- Klik keybox (rekomendasi utama wajib)
+- Klik valid
+- (opsional) Klik custom (gunakan ini jika tidak ada keybox valid di tricky store dan kamu memiliki file custom valid keybox.xml)
+- Klik menu lagi
+- Klik atur patch keamanan
+- Klik mode lanjutan
+- Klik ambil tanggal patch keamanan
+- Turunin 1 bulan kebawah (misal 01-11-2025 ➡️ 01-10-2025)
+- Klik simpan
+- Done
+
+---
+
+🛩️ Setting PIF
+
+Jika Menggunakan PIF Fork:
+- Buka Magisk
+- Masuk ke menu module
+- Klik Action di module Pif (untuk pif fork)
+- Tunggu
+- Done
+
+Jika Menggunakan PIF Inject S:
+- Buka KSUWebui
+- Klik PIF Inject S
+- Aktifkan Spoof Build
+- Aktifkan Spoof Build (Playstore)
+- Aktifkan Spoof Props
+- Aktifkan Spoof Provider
+- Aktifkan Spoof Signature (jika rom kalian testkey)
+- Klik fetch
+- Pilih Device Pixel 9/10, 10 pro, 10 promax++ (terserah)
+- Klik auto pif (jika auto pif gagal gunakan github)
+- Tunggu
+- Done
+
+---
+
+✨ Cek Status Keybox & Bootloader
+
+- Buka Aplikasi Key Attestation
+- Klik menu titik 3
+- Klik reset
+- Jika hasilnya:
+  - Biru 2 ➡️ sudah benar 🥳
+  - Kuning 1 ➡️ masih ada yang salah/kurang
+  - Merah 1 ➡️ ada yang salah/keybox kena revoked
+  - Abu-Abu ➡️ ada yang salah
+  - Bootloader locked (biru) ➡️ Aman
+- Done
+
+---
+
+🌩️ Bagian Cek Integrity
+
+- Buka Aplikasi playstore
+- Klik ikon profil
+- Klik menu setelan
+- Geser Kebawah ke tentang
+- Klik versi playstore berkali-kali sampai muncul opsi developer
+- Geser Keatas
+- Klik Umum
+- Klik opsi developer
+- Klik periksa integritas
+- Lihat pada bagian labels
+- Jika hasilnya seperti ini:
+  - Labels: [MEETS_BASIC_INTEGRITY,
+             MEETS_DEVICE_INTEGRITY, 
+             MEETS_STRONG_INTEGRITY] ➡️ kamu keren 😎
+             
+  - Labels: [MEETS_BASIC_INTEGRITY,
+             MEETS_DEVICE_INTEGRITY] saja ➡️ sudah cukup 🥳
+             
+  - Labels: [MEETS_BASIC_INTEGRITY] saja ➡️ no problem 😁
+  
+  - Labels: [] saja ➡️ waduh, ga normal 😨
+
+Note: Kalau bisa kamu harus mendapatkan setidaknya 1 integrity yaitu MEETS_BASIC_INTEGRITY, walaupun kamu mendapatkan strong, belum tentu juga mbank/ewallet bisa langsung dibuka, kuncinya ada di hide root&app bukan di integrity
+
+---
+
+🛡️ Bagian Hide Root
+
+- Buka magisk
+- Buka pengaturan
+- Geser kebawah
+- Matikan Zygisk bawaan
+- Matikan Enforce denylist
+- Cari konfigurasi denylist
+- Pencet
+- Cari aplikasi playstore ➡️ centang
+- Cari layanan google play ➡️ centang
+- Kalau tidak ada klik tampilkan sistem
+- Cari aplikasi mbank (misal dana)
+- Centang aplikasi dana (garis biru mentokin ke kanan)
+- Klik dulu judul/teks dana baru klik centang agar otomatis kecentang semua
+
+👉 Lakukan pada semua aplikasi mbank lain yang kamu punya
+
+---
+
+🛩️ Setting Zygisk Next 131/132++
+
+- Buka Ksuwebui
+- Klik Zygisk Next
+- Geser Kebawah
+- Matikan Perlakukan aplikasi tanpa akses root sebagai denylist
+- Ubah Penerapan denylist menjadi Hanya unmount
+- Aktifkan Gunakan memori anonim
+- Aktifkan Gunakan linker Zygisk Next (Eksperimental)
+- Matikan Log ke dmesg (Hanya untuk pengembang)
+- Done
+
+---
+
+⚙️ Bagian Aktifin HMA OSS
+
+- Buka LSPosed lewat notifikasi (lsposed dimuat)
+- Pindah ke tab modul
+- Pencet/buka hide my applist oss (hmaoss)
+- Klik aktifkan modul
+- Centang kerangka kerja sistem (cukup 1 ini saja)
+- 🔄 Reboot system
+
+---
+
+🕵️ Bagian Hide Applist
+
+- Buka aplikasi hide my applist oss (hma oss)
+- Klik Konfigurasi pemulihan
+- Klik Config hma oss siroha nya
+- Klik Kelola Template
+- Klik yang HIDE ROOT by Siroha
+- Klik edit daftar yg ada di samping kata aplikasi tidak terlihat
+- Centang semua aplikasi yang belum dicentang disitu 
+- Jangan centang tampilkan sistem yg ada di menu titik 3
+- Kembali ke menu home
+- Done
+
+---
+
+🧹 Terakhir
+
+- Keluar dari aplikasi hide my applist
+- Hapus data aplikasi mbank 1 (misal dana)
+- Buka mbank 1 ➡️ lihat apakah work
+
+👉 Lakukan pada semua aplikasi mbank lain yang kamu punya
+
+---
+
+✨ Klo ada yg miss silahkan improvisasi sendiri
+🎉 SELESAI 🎉
